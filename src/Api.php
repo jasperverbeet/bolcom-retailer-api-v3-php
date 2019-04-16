@@ -5,6 +5,7 @@ namespace BolRetailerAPI;
 use BolRetailerAPI\Client\AuthenticatedClient;
 use BolRetailerAPI\Models\CommissionModel;
 use GuzzleHttp\Exception\ClientException;
+use BolRetailerAPI\Models\OfferModel;
 
 class Api
 {
@@ -69,5 +70,14 @@ class Api
         return CommissionModel::manyFromResponse($deserialized->commissions);
     }
 
+    /**
+     * Retrieve inventory of the current user.
+     */
+    public function getInventory() : array
+    {
+        $resp = $this->client->authRequest("inventory", "GET");
 
+        $deserialized = Serializer::deserialize((string)$resp->getBody());
+        return OfferModel::manyFromResponse($deserialized->offers);
+    }
 }

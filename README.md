@@ -24,8 +24,6 @@ $client = new Api($client_id, $client_secret);
 
 ### Comissions
 ```php
-// Examples:
-
 // Get commision data for a single EAN
 $client->getCommission('8712626055143', 30.00, 'NEW')
 
@@ -43,6 +41,13 @@ $client->getCommissions(array(
     ),
 ));
 ```
+
+### Inventory
+```php
+// Get inventory for current user
+$client->getInventory();
+```
+
 
 ## Running Tests
 

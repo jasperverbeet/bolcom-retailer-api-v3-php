@@ -66,9 +66,14 @@ class ApiTest extends BolTestCase
             )
         ));
 
-        var_dump($models);
-
         $this->assertEquals(count($models), 5);
         $this->assertEquals(count($models[4]->reductions), 1);
+    }
+
+    public function testInventory()
+    {
+        $models = $this->api->getInventory();
+        $this->assertEquals(count($models), 1);
+        $this->assertEquals($models[0]->ean, "8718526069334");
     }
 }
