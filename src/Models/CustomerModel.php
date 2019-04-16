@@ -4,65 +4,82 @@ namespace BolRetailerAPI\Models;
 
 class CustomerModel extends BaseModel
 {
-    //{
-//   "rmaId" : 86127131,
-//   "orderId" : "7616247328",
-//   "ean" : "8718526069334",
-//   "title" : "Star Wars - Nappy Star wars T-shirt - XL",
-//   "quantity" : 1,
-//   "registrationDateTime" : "2018-04-27T19:55:12+02:00",
-//   "returnReason" : "Verkeerd besteld",
-//   "returnReasonComments" : "Ik wilde eigenlijk een groter formaat",
-//   "customerDetails" : {
-//     "salutationCode" : "01",
-//     "firstName" : "Chewbakka",
-//     "surname" : "Wookiee",
-//     "streetName" : "Kashyyykstraat",
-//     "houseNumber" : "100",
-//     "zipCode" : "3528BJ",
-//     "city" : "Utrecht",
-//     "countryCode" : "NL",
-//     "email" : "25whxgzlkmrvs47wsq2yohuwgfnwzk&verkopen.test2.bol.com"
-//   },
-//   "fulfilmentMethod" : "FBB",
-//   "handled" : false,
-//   "trackAndTrace" : "3SXOLD7654321"
-// }
+    /**
+     * @var string
+     */
+    public $salutationCode;
 
     /**
      * @var string
      */
-    public $ean;
+    public $firstName;
 
     /**
      * @var string
      */
-    public $bsku;
+    public $surname;
 
     /**
      * @var string
      */
-    public $title;
+    public $streetName;
 
     /**
-     * @var integer
+     * @var string
      */
-    public $nckStock;
+    public $houseNumberExtended;
 
     /**
-     * @var integer
+     * @var string
      */
-    public $stock;
+    public $deliveryPhoneNumber;
+
+    /**
+     * @var string
+     */
+    public $houseNumber;
+
+    /**
+     * @var string
+     */
+    public $zipCode;
+
+    /**
+     * @var string
+     */
+    public $city;
+
+    /**
+     * @var string
+     */
+    public $countryCode;
+
+    /**
+     * @var string
+     */
+    public $email;
+
+    /**
+     * Get full name of this contact
+     */
+    public function getFullName() : string
+    {
+        return "{$this->firstName} {$this->surname}";
+    }
 
     /**
      * Validate this model, assert that all required values are set.
      */
     public function validate(): void
     {
-        $this->assertType($this->ean, 'string');
-        $this->assertType($this->bsku, 'string');
-        $this->assertType($this->title, 'string');
-        $this->assertType($this->nckStock, 'integer');
-        $this->assertType($this->stock, 'integer');
+        $this->assertType($this->salutationCode, 'string');
+        $this->assertType($this->firstName, 'string');
+        $this->assertType($this->surname, 'string');
+        $this->assertType($this->streetName, 'string');
+        $this->assertType($this->houseNumber, 'string');
+        $this->assertType($this->zipCode, 'string');
+        $this->assertType($this->city, 'string');
+        $this->assertType($this->countryCode, 'string');
+        $this->assertType($this->email, 'string');
     }
 }

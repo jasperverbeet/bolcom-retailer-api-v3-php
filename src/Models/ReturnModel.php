@@ -123,5 +123,10 @@ class ReturnModel extends BaseModel
         $this->assertType($this->returnReason, 'string');
         $this->assertType($this->returnReasonComments, 'string');
         $this->assertType($this->handled, 'boolean');
+
+        if (!is_null($this->customerDetails))
+        {
+            $this->customerDetails = CustomerModel::fromResponse($this->customerDetails);
+        }
     }
 }

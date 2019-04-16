@@ -96,4 +96,10 @@ class ApiTest extends BolTestCase
         $models = $this->api->getAllReturns('FBR');
         $this->assertEquals(count($models), 8);
     }
+
+    public function testGetFullName()
+    {
+        $model = $this->api->getReturn("86127131");
+        $this->assertEquals($model->customerDetails->getFullName(), "Chewbakka Wookiee");
+    }
 }
