@@ -1,19 +1,24 @@
 <?php
-namespace Jasperverbeet\Tests;
+namespace BolRetailerAPI\Tests;
 
-use Jasperverbeet\Tests\BolTestCase;
-use Jasperverbeet\BolRetailerAPI\Authentication;
-use Jasperverbeet\BolRetailerAPI\Exceptions\AuthenticationException;
+use BolRetailerAPI\Tests\BolTestCase;
+use BolRetailerAPI\Client\AuthenticatedClient;
+use BolRetailerAPI\Exceptions\AuthenticationException;
 
 class AuthenticationTest extends BolTestCase
 {
     private $client;
 
-    protected function setUp()
+    protected function setUp() : void
     {
-        $this->client = new Authentication;
+        $this->client = new AuthenticatedClient;
         $this->client_id = getenv('API_CLIENT_ID');
         $this->client_secret = getenv('API_CLIENT_SECRET');
+    }
+
+    public function testIsAuthenticatedNoCredentialsSet()
+    {
+        $this->assertFalse($this->client->isAuthenticated());
     }
 
     public function testCredentialsNotSet()
@@ -34,5 +39,6 @@ class AuthenticationTest extends BolTestCase
     {
         $this->client->setCredentials($this->client_id, $this->client_secret);
         $this->client->authenticate();
+        $this->assertTrue($this->client->isAuthenticated());
     }
 }

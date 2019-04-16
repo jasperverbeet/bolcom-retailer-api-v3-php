@@ -1,6 +1,6 @@
 <?php
 
-namespace Jasperverbeet\BolRetailerAPI\Exceptions;
+namespace BolRetailerAPI\Exceptions;
 
 class AuthenticationException extends \Exception
 {

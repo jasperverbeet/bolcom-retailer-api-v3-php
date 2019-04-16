@@ -5,4 +5,4 @@ update:
 	composer update
 
 test:
-	./vendor/bin/phpunit tests
+	./vendor/bin/phpunit --verbose tests
