@@ -64,4 +64,21 @@ class BaseClient
          ),
       ]);
    }
+
+   /**
+    * Perform a put request.
+    * @param string $url Endpoint to do the request
+    * @param array $parameters Optional body parameters
+    * @param array $headers Optional headers
+    */
+    public function put(string $url, array $parameters = array(), array $headers = array()): Response
+    {
+       return $this->client->request('PUT', $url, [
+          'body' => json_encode($parameters),
+          'headers' => array_merge(
+             $headers,
+             $this->getDefaultHeaders(),
+          ),
+       ]);
+    }
 }

@@ -6,6 +6,8 @@ use BolRetailerAPI\Client\AuthenticatedClient;
 use BolRetailerAPI\Models\CommissionModel;
 use GuzzleHttp\Exception\ClientException;
 use BolRetailerAPI\Models\OfferModel;
+use BolRetailerAPI\Models\EventModel;
+use BolRetailerAPI\Models\ReturnModel;
 
 class Api
 {
@@ -14,7 +16,7 @@ class Api
     function __construct(string $client_id, string $client_secret)
     {
         if (is_null($client_id) || is_null($client_secret)) {
-            throw new \InvalidArgumentException('Supply a client_id and client_secret!');
+            throw new \InvalidArgumentException("Supply a client_id and client_secret!");
         }
 
         $this->client = new AuthenticatedClient;
@@ -25,7 +27,7 @@ class Api
     /**
      * Use demo environment instead of production to test out api calls.
      */
-    public function demoMode() : void
+    public function demoMode(): void
     {
         $this->client->setDemoMode();
     }
@@ -37,11 +39,11 @@ class Api
      * @param float $price Price used for calculation
      * @param string $condition Condition of offer (NEW or GOOD)
      */
-    public function getCommission(string $ean, float $price = 0.00, string $condition = 'NEW') : CommissionModel
+    public function getCommission(string $ean, float $price = 0.00, string $condition = "NEW"): CommissionModel
     {
-        $resp = $this->client->authRequest("commission/${ean}", 'GET', array(
-            'price' => $price,
-            'condition' => $condition,
+        $resp = $this->client->authRequest("commission/${ean}", "GET", array(
+            "price" => $price,
+            "condition" => $condition,
         ));
 
         $deserialized = Serializer::deserialize((string)$resp->getBody());
@@ -49,7 +51,7 @@ class Api
     }
 
     /**
-     * Retrieve commission information on multiple EAN's
+     * Retrieve commission information on multiple EAN"s
      * 
      * @param object[] $products a list of products to get commission info on. Example:
      * [{
@@ -60,10 +62,10 @@ class Api
      * 
      * @return CommissionModel[] A list of CommissionModels
      */
-    public function getCommissions(array $products) : array
+    public function getCommissions(array $products): array
     {
         $resp = $this->client->authRequest("commission/", "POST", array(
-            'commissionQueries' => $products,
+            "commissionQueries" => $products,
         ));
 
         $deserialized = Serializer::deserialize((string)$resp->getBody());
@@ -73,7 +75,7 @@ class Api
     /**
      * Retrieve inventory of the current user.
      */
-    public function getInventory() : array
+    public function getInventory(): array
     {
         $resp = $this->client->authRequest("inventory", "GET");
 
@@ -81,5 +83,74 @@ class Api
         return OfferModel::manyFromResponse($deserialized->offers);
     }
 
-    
+    /**
+     * Update return status for an order.
+     * https://api.bol.com/retailer/public/demo/returns.html
+     * 
+     * @param string $rmaId The bol.com internal retour id.
+     * @param string $handlingResult New handling status. Options are:
+     * EXCHANGE_PRODUCT | RETURN_RECEIVED
+     * @param int $quantityReturned The amount of received goods.
+     */
+    public function updateReturnStatus(string $rmaId, string $handlingResult = "RETURN_RECEIVED", int $quantityReturned = 1): EventModel
+    {
+        $resp = $this->client->authRequest("returns/{$rmaId}", "PUT", array(
+            "handlingResult" => $handlingResult,
+            "quantityReturned" => $quantityReturned,
+        ));
+
+        $deserialized = Serializer::deserialize((string)$resp->getBody());
+        return EventModel::fromResponse($deserialized);
+    }
+
+    /**
+     * Get return status for an order
+     * https://api.bol.com/retailer/public/demo/returns.html
+     * 
+     * @param string $rmaId The bol.com internal retour id.
+     */
+    public function getReturn(string $rmaId): ReturnModel
+    {
+        $resp = $this->client->authRequest("returns/${rmaId}", "GET");
+
+        $deserialized = Serializer::deserialize((string)$resp->getBody());
+        return ReturnModel::fromResponse($deserialized);
+    }
+
+    /**
+     * Get return statusses for many orders.
+     * https://api.bol.com/retailer/public/demo/returns.html
+     * 
+     * @param string $fulfilment Fulfilment type. Options are: FBB | FBR
+     * @param boolean $handled Whether the handled returns should be returns or
+     * the unhandled.
+     * 
+     * @return ReturnModel[]
+     */
+    public function getReturns(string $fulfilment = "FBB", bool $handled = false): array
+    {
+        $resp = $this->client->authRequest("returns", "GET", array(
+            "fulfilment-method" => $fulfilment,
+            "handled" => $handled,
+        ));
+
+        $deserialized = Serializer::deserialize((string)$resp->getBody());
+        return ReturnModel::manyFromResponse($deserialized->returns);
+    }
+
+    /**
+     * Get all return statusses for handled and unhandled orders.
+     * https://api.bol.com/retailer/public/demo/returns.html
+     * 
+     * @param string $fulfilment Fulfilment type. Options are: FBB | FBR
+     * 
+     * @return ReturnModel[]
+     */
+    public function getAllReturns(string $fulfilment = "FBB"): array
+    {
+        return array_merge(
+            $this->getReturns($fulfilment, false),
+            $this->getReturns($fulfilment, true),
+        );
+    }
 }

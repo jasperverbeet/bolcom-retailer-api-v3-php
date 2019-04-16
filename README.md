@@ -11,13 +11,13 @@ More information:
 ```php
 use BolRetailerAPI\Api;
 
-$client_id = '{client_id}'
-$client_secret = '{client_secret}'
+$client_id = "{client_id}"
+$client_secret = "{client_secret}"
 
 $client = new Api($client_id, $client_secret);
 
 // Set demo mode if wanted
-// $client->demoMode();
+$client->demoMode();
 ```
 
 ## Methods
@@ -25,7 +25,7 @@ $client = new Api($client_id, $client_secret);
 ### Comissions
 ```php
 // Get commision data for a single EAN
-$client->getCommission('8712626055143', 30.00, 'NEW')
+$client->getCommission("8712626055143", 30.00, "NEW")
 
 // Get commision data for a many EAN's
 $client->getCommissions(array(
@@ -48,17 +48,35 @@ $client->getCommissions(array(
 $client->getInventory();
 ```
 
+### Returns
+```php
+// Update a specific return status
+$client->updateReturnStatus("86123452", "RETURN_RECEIVED", 3);
+
+// Get the return status for a specific order
+$client->getReturn("86123452");
+
+// Get the return statuses for many handled orders
+$client->getReturns("FBB", true);
+
+// Get the return statuses for many unhandled orders
+$client->getReturns("FBB", false);
+
+// Get all return statuses for orders
+$client->getAllReturns("FBB");
+```
+
 ## TODO
 
 - ~Commission~
-- Inbounds
+- ~Returns~
 - ~Inventory~
+- Inbounds
 - Invoices
 - Offers
 - Orders
 - Process status
 - Reductions
-- Returns
 - Shipments
 - Shipping labels
 - Transports

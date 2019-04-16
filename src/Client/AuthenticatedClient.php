@@ -116,8 +116,15 @@ class AuthenticatedClient extends BaseClient
                     array_merge($headers, array('Content-Type' => 'application/vnd.retailer.v3+json'))
                 );
                 break;
+            case 'PUT':
+                return $this->put(
+                    $this->api_base . $endpoint,
+                    $parameters,
+                    array_merge($headers, array('Content-Type' => 'application/vnd.retailer.v3+json'))
+                );
+                break;
             default:
-                throw new \InvalidArgumentException("{$method} is not a support request method");
+                throw new \InvalidArgumentException("{$method} is not a supported request method");
                 break;
         }
     }

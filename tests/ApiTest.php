@@ -76,4 +76,24 @@ class ApiTest extends BolTestCase
         $this->assertEquals(count($models), 1);
         $this->assertEquals($models[0]->ean, "8718526069334");
     }
+
+    public function testUpdateReturnStatus()
+    {
+        $model = $this->api->updateReturnStatus('86123452', "RETURN_RECEIVED", 3);
+        $this->assertEquals($model->status, "PENDING");
+    }
+
+    public function testGetReturn()
+    {
+        $model = $this->api->getReturn("86123452");
+        $this->assertEquals($model->title, "Star Wars - Original Trilogy");
+    }
+
+    public function testGetUnhandledReturns()
+    {
+        $models = $this->api->getReturns('FBB');
+        $this->assertEquals(count($models), 1);
+        $models = $this->api->getAllReturns('FBR');
+        $this->assertEquals(count($models), 8);
+    }
 }
