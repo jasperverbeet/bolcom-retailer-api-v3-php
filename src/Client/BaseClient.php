@@ -14,16 +14,21 @@ use GuzzleHttp\Psr7\Response;
 class BaseClient
 {
 
-   const TOKEN_ENDPOINT = 'https://login.bol.com/token';
-   const API_ENDPOINT = 'https://api.bol.com/';
-
-   private $client;
+   public $client;
 
    function __construct()
    {
-      $this->client = new \GuzzleHttp\Client([
-         'http_errors' => false
-      ]);
+      $this->client = new \GuzzleHttp\Client();
+   }
+
+   /**
+    * Returns an array with default headers
+    */
+   private function getDefaultHeaders() : array
+   {
+      return array(
+         'Accept' => 'application/vnd.retailer.v3+json',
+      );
    }
 
    /**
@@ -36,7 +41,10 @@ class BaseClient
    {
       return $this->client->request('GET', $url, [
          'query' => $query,
-         'headers' => $headers
+         'headers' => array_merge(
+            $headers,
+            $this->getDefaultHeaders()
+         ),
       ]);
    }
 
@@ -49,8 +57,11 @@ class BaseClient
    public function post(string $url, array $parameters = array(), array $headers = array()): Response
    {
       return $this->client->request('POST', $url, [
-         'form_params' => $parameters,
-         'headers' => $headers
+         'body' => json_encode($parameters),
+         'headers' => array_merge(
+            $headers,
+            $this->getDefaultHeaders(),
+         ),
       ]);
    }
 }

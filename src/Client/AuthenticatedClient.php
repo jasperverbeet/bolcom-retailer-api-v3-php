@@ -7,6 +7,8 @@ use Carbon\Carbon;
 use BolRetailerAPI\Formatters\AuthenticationFormatter;
 use BolRetailerAPI\Models\AuthenticationModel;
 use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Exception\ClientException;
+use BolRetailerAPI\Serializer;
 
 /**
  *  Authenticated Client
@@ -25,10 +27,8 @@ class AuthenticatedClient extends BaseClient
     private $token_type = 'Bearer';
     private $scope = 'RETAILER';
 
-    function __construct()
-    {
-        parent::__construct();
-    }
+    private $token_base = 'https://login.bol.com/token';
+    private $api_base = 'https://api.bol.com/retailer/';
 
     /**
      * Set user credentials. Obtain these credentials at:
@@ -40,6 +40,11 @@ class AuthenticatedClient extends BaseClient
     {
         $this->client_id = $client_id;
         $this->client_secret = $client_secret;
+    }
+
+    public function setDemoMode()
+    {
+        $this->api_base = 'https://api.bol.com/retailer-demo/';
     }
 
     /**
@@ -59,22 +64,20 @@ class AuthenticatedClient extends BaseClient
             throw new \InvalidArgumentException('Client credentials not set, use the setCredentials method.');
         }
 
-        // Authentication request
-        $response = $this->post(
-            self::TOKEN_ENDPOINT,
-            array(
-                'client_id' => $this->client_id,
-                'client_secret' => $this->client_secret,
-                'grant_type' => 'client_credentials',
-            )
-        );
-
-        // Assert the user is authorized
-        if ($response->getStatusCode() == 401) {
+        try {
+            $response = $this->client->request('POST', $this->token_base, [
+                'form_params' => array(
+                    'client_id' => $this->client_id,
+                    'client_secret' => $this->client_secret,
+                    'grant_type' => 'client_credentials',
+                )
+            ]);
+        } catch (ClientException $th) {
             throw new AuthenticationException('Client not authorized.');
         }
 
-        $model = AuthenticationModel::fromResponse((string)$response->getBody());
+        $deserialized = Serializer::deserialize((string)$response->getBody());
+        $model = AuthenticationModel::fromResponse($deserialized);
 
         // These attributes are now safe to access
         $this->access_token = $model->access_token;
@@ -84,27 +87,34 @@ class AuthenticatedClient extends BaseClient
     }
 
     /**
-     * Perform an authenticated post request
+     * Perform an authenticated request
      * 
-     * @param string $url Endpoint to do the request
+     * @param string $endpoint Endpoint to do the request
      * @param string $method Either GET or POST
      * @param array $parameters Optional parameters
      * @param array $headers Optional headers
      */
-    public function authenticatedPost(string $url, string $method, array $parameters = array(), array $headers = array()) : Response
-    {   
+    public function authRequest(string $endpoint, string $method, array $parameters = array(), array $headers = array()): Response
+    {
         // (Re) authenticate user if not authenticated
         if ($this->isAuthenticated()) $this->authenticate();
+
+        $parameters = array_filter($parameters);
+        $headers = array_filter($headers);
 
         // Add authorization header
         $headers['Authorization'] = "{$this->token_type} {$this->access_token}";
 
         switch ($method) {
             case 'GET':
-                return $this->get($url, $parameters, $headers);
+                return $this->get($this->api_base . $endpoint, $parameters, $headers);
                 break;
             case 'POST':
-                return $this->post($url, $parameters, $headers);
+                return $this->post(
+                    $this->api_base . $endpoint,
+                    $parameters,
+                    array_merge($headers, array('Content-Type' => 'application/vnd.retailer.v3+json'))
+                );
                 break;
             default:
                 throw new \InvalidArgumentException("{$method} is not a support request method");

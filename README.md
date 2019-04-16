@@ -7,3 +7,6 @@ More information:
 [https://developers.bol.com/newretailerapiv3/](https://developers.bol.com/newretailerapiv3/)
 
 
+## Running Tests
+
+The tests require a working bol.com api key.
