@@ -92,7 +92,7 @@ class Api
      * EXCHANGE_PRODUCT | RETURN_RECEIVED
      * @param int $quantityReturned The amount of received goods.
      */
-    public function updateReturnStatus(string $rmaId, string $handlingResult = "RETURN_RECEIVED", int $quantityReturned = 1): EventModel
+    public function updateReturn(string $rmaId, string $handlingResult = "RETURN_RECEIVED", int $quantityReturned = 1): EventModel
     {
         $resp = $this->client->authRequest("returns/{$rmaId}", "PUT", array(
             "handlingResult" => $handlingResult,
@@ -152,5 +152,16 @@ class Api
             $this->getReturns($fulfilment, false),
             $this->getReturns($fulfilment, true),
         );
+    }
+
+    public function updateTransport(string $orderId, string $transporterCode, string $trackAndTrace): EventModel
+    {
+        $resp = $this->client->authRequest("transports/{$orderId}", "PUT", array(
+            "transporterCode" => $transporterCode,
+            "trackAndTrace" => $trackAndTrace,
+        ));
+
+        $deserialized = Serializer::deserialize((string)$resp->getBody());
+        return EventModel::fromResponse($deserialized);
     }
 }

@@ -79,7 +79,7 @@ class ApiTest extends BolTestCase
 
     public function testUpdateReturnStatus()
     {
-        $model = $this->api->updateReturnStatus('86123452', "RETURN_RECEIVED", 3);
+        $model = $this->api->updateReturn('86123452', "RETURN_RECEIVED", 3);
         $this->assertEquals($model->status, "PENDING");
     }
 
@@ -101,5 +101,11 @@ class ApiTest extends BolTestCase
     {
         $model = $this->api->getReturn("86127131");
         $this->assertEquals($model->customerDetails->getFullName(), "Chewbakka Wookiee");
+    }
+
+    public function testUpdateTransport()
+    {
+        $model = $this->api->updateTransport('358612589', 'TNT', '3SAOLD1234567');
+        $this->assertEquals($model->status, "PENDING");
     }
 }

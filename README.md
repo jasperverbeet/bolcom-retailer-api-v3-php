@@ -54,7 +54,7 @@ $client->getInventory();
 [https://api.bol.com/retailer/public/demo/returns.html](https://api.bol.com/retailer/public/demo/returns.html)
 ```php
 // Update a specific return status
-$client->updateReturnStatus("86123452", "RETURN_RECEIVED", 3);
+$client->updateReturn("86123452", "RETURN_RECEIVED", 3);
 
 // Get the return status for a specific order
 $client->getReturn("86123452");
@@ -66,7 +66,14 @@ $client->getReturns("FBB", true);
 $client->getReturns("FBB", false);
 
 // Get all return statuses for orders
-$client->getAllReturns("FBB");
+$client->getAllReturns("FBR");
+```
+
+### Transports
+[https://api.bol.com/retailer/public/demo/transports.html](https://api.bol.com/retailer/public/demo/transports.html)
+```php
+// Add a specific transport
+$client->updateTransport("358612589", "TNT", "3SAOLD1234567");
 ```
 
 ## TODO
@@ -74,6 +81,7 @@ $client->getAllReturns("FBB");
 - ~Commission~
 - ~Returns~
 - ~Inventory~
+- ~Transports~
 - Inbounds
 - Invoices
 - Offers
@@ -82,7 +90,6 @@ $client->getAllReturns("FBB");
 - Reductions
 - Shipments
 - Shipping labels
-- Transports
 
 
 ## Running Tests
