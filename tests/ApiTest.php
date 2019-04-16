@@ -3,7 +3,6 @@ namespace BolRetailerAPI\Tests;
 
 use BolRetailerAPI\Tests\BolTestCase;
 use BolRetailerAPI\Api;
-use BolRetailerAPI\Exceptions\AuthenticationException;
 
 class ApiTest extends BolTestCase
 {
@@ -116,5 +115,12 @@ class ApiTest extends BolTestCase
     {
         $model = $this->api->getReductions();
         $this->assertEquals($model[0]->costReduction, 1.45);
+    }
+
+    public function testGetShipments()
+    {
+
+        $models = $this->api->getShipments('FBB');
+        $this->assertEquals(count($models), 1);
     }
 }

@@ -9,11 +9,28 @@ use BolRetailerAPI\Models\OfferModel;
 use BolRetailerAPI\Models\EventModel;
 use BolRetailerAPI\Models\ReturnModel;
 use BolRetailerAPI\Models\ReductionModel;
+use BolRetailerAPI\Models\ShipmentModel;
 
+/**
+ * Api Class
+ *
+ * This class can be used to directly acces the api. More information about the
+ * available endpoints can be found at github. https://github.com/jasperverbeet/bolcom-retailer-api-v3-php.
+ * 
+ * Technical documentation is available at https://api.bol.com/retailer/public/apispec/formatted/index.html
+ * @author Jasper Verbeet
+ */
 class Api
 {
     private $client;
 
+    /**
+     * To construct the api a client_id and client_secret are needed. The credentials
+     * can be found here https://developers.bol.com/apiv3credentials/
+     * 
+     * @param string $client_id The client ID to authenticate with.
+     * @param string $client_secret The client Secret to authenticate with.
+     */
     function __construct(string $client_id, string $client_secret)
     {
         if (is_null($client_id) || is_null($client_secret)) {
@@ -75,10 +92,15 @@ class Api
 
     /**
      * Retrieve inventory of the current user.
+     * 
+     * @param int $page The page for the paginated model. A single page consists
+     * of 50 unique items.
      */
-    public function getInventory(): array
+    public function getInventory(int $page = 1): array
     {
-        $resp = $this->client->authRequest("inventory", "GET");
+        $resp = $this->client->authRequest("inventory", "GET", array(
+            "page" => $page,
+        ));
 
         $deserialized = Serializer::deserialize((string)$resp->getBody());
         return OfferModel::manyFromResponse($deserialized->offers);
@@ -125,14 +147,17 @@ class Api
      * @param string $fulfilment Fulfilment type. Options are: FBB | FBR
      * @param boolean $handled Whether the handled returns should be returns or
      * the unhandled.
+     * @param int $page The page for the paginated model. A single page consists
+     * of 50 unique items.
      * 
      * @return ReturnModel[]
      */
-    public function getReturns(string $fulfilment = "FBB", bool $handled = false): array
+    public function getReturns(string $fulfilment = "FBB", bool $handled = false, int $page = 1): array
     {
         $resp = $this->client->authRequest("returns", "GET", array(
             "fulfilment-method" => $fulfilment,
             "handled" => $handled,
+            "page" => $page,
         ));
 
         $deserialized = Serializer::deserialize((string)$resp->getBody());
@@ -146,14 +171,16 @@ class Api
      * https://api.bol.com/retailer/public/demo/returns.html
      * 
      * @param string $fulfilment Fulfilment type. Options are: FBB | FBR
+     * @param int $page The page for the paginated model. A single page consists
+     * of 50 unique items.
      * 
      * @return ReturnModel[]
      */
-    public function getAllReturns(string $fulfilment = "FBB"): array
+    public function getAllReturns(string $fulfilment = "FBB", int $page = 1): array
     {
         return array_merge(
-            $this->getReturns($fulfilment, false),
-            $this->getReturns($fulfilment, true),
+            $this->getReturns($fulfilment, false, $page),
+            $this->getReturns($fulfilment, true, $page),
         );
     }
 
@@ -182,15 +209,39 @@ class Api
      * This endpoint will return a list EAN’s that are eligible for reductions on the commission fee.
      * https://api.bol.com/retailer/public/demo/reductions.html
      * 
+     * @param int $page The page for the paginated model. A single page consists
+     * of 50 unique items.
+     * 
      * @return ReductionModel[]
      */
-    public function getReductions() : array
+    public function getReductions(int $page = 1) : array
     {
-        $resp = $this->client->authRequest("reductions", "GET", array(), array(
+        $resp = $this->client->authRequest("reductions", "GET", array(
+            "page" => $page,
+        ), array(
             "Accept" => "application/vnd.retailer.v3+csv",
         ));
 
         $deserialized = Serializer::deserializeCSV((string) $resp->getBody());
         return ReductionModel::manyFromResponse($deserialized);
+    }
+
+    /**
+     * A paginated list to retrieve all your shipments. The shipments will be
+     * sorted by date in descending order.
+     * 
+     * @param string $fulfilment Fulfilment type. Options are: FBB | FBR
+     * @param int $page The page for the paginated model. A single page consists
+     * of 50 unique items.
+     */
+    public function getShipments(string $fulfilment = "FBB", int $page = 1) : array
+    {
+        $resp = $this->client->authRequest("shipments", "GET", array(
+            "fulfilment-method" => $fulfilment,
+            "page" => $page,
+        ));
+
+        $deserialized = Serializer::deserialize((string) $resp->getBody());
+        return ShipmentModel::manyFromResponse($deserialized->shipments);
     }
 }

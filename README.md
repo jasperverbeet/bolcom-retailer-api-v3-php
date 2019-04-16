@@ -83,6 +83,13 @@ $client->updateTransport("358612589", "TNT", "3SAOLD1234567");
 $client->getReductions();
 ```
 
+### Shipments
+[https://api.bol.com/retailer/public/demo/shipments.html](https://api.bol.com/retailer/public/demo/shipments.html)
+```php
+// Get all shipments for the current user
+$client->getShipments("FBB");
+```
+
 ## TODO
 
 - ~Commission~
