@@ -2,8 +2,6 @@
 
 namespace BolRetailerAPI\Models;
 
-use BolRetailerAPI\Exceptions\SerializationException;
-use BolRetailerAPI\Exceptions\UnexpectedResponseException;
 use BolRetailerAPI\Exceptions\ModelValidationException;
 
 abstract class BaseModel
@@ -22,6 +20,11 @@ abstract class BaseModel
         }
     }
 
+    /**
+     * Create a new instance of this class from the deserialized data.
+     * 
+     * @param object $deserialized Deserialized json
+     */
     static private function createObject(object $deserialized) : object
     {
         $ref = new \ReflectionClass(static::class);
