@@ -48,6 +48,21 @@ $client->getCommissions(array(
 $client->getInventory();
 ```
 
+## TODO
+
+- ~Commission~
+- Inbounds
+- ~Inventory~
+- Invoices
+- Offers
+- Orders
+- Process status
+- Reductions
+- Returns
+- Shipments
+- Shipping labels
+- Transports
+
 
 ## Running Tests
 

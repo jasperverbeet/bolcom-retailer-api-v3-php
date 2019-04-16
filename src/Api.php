@@ -80,4 +80,6 @@ class Api
         $deserialized = Serializer::deserialize((string)$resp->getBody());
         return OfferModel::manyFromResponse($deserialized->offers);
     }
+
+    
 }
