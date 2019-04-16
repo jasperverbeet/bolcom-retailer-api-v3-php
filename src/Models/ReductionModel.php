@@ -27,7 +27,6 @@ class ReductionModel extends BaseModel
      */
     public $costReduction;
 
-
     /**
      * Validate this model, assert that all required values are set.
      */
