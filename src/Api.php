@@ -8,6 +8,7 @@ use GuzzleHttp\Exception\ClientException;
 use BolRetailerAPI\Models\OfferModel;
 use BolRetailerAPI\Models\EventModel;
 use BolRetailerAPI\Models\ReturnModel;
+use BolRetailerAPI\Models\ReductionModel;
 
 class Api
 {
@@ -154,6 +155,16 @@ class Api
         );
     }
 
+    /**
+     * Update a transport status to shipped.
+     * https://api.bol.com/retailer/public/demo/transports.html
+     * 
+     * @param string $orderId The order id.
+     * @param string $transporterCode The transporter (i.e. TNT).
+     * @param string $trackAndTrace The track and trace code.
+     * 
+     * @return EventModel
+     */
     public function updateTransport(string $orderId, string $transporterCode, string $trackAndTrace): EventModel
     {
         $resp = $this->client->authRequest("transports/{$orderId}", "PUT", array(
@@ -163,5 +174,21 @@ class Api
 
         $deserialized = Serializer::deserialize((string)$resp->getBody());
         return EventModel::fromResponse($deserialized);
+    }
+
+    /**
+     * This endpoint will return a list EAN’s that are eligible for reductions on the commission fee.
+     * https://api.bol.com/retailer/public/demo/reductions.html
+     * 
+     * @return ReductionModel[]
+     */
+    public function getReductions() : array
+    {
+        $resp = $this->client->authRequest("reductions", "GET", array(), array(
+            "Accept" => "application/vnd.retailer.v3+csv",
+        ));
+
+        $deserialized = Serializer::deserializeCSV((string) $resp->getBody());
+        return ReductionModel::manyFromResponse($deserialized);
     }
 }

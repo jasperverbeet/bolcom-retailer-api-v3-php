@@ -7,6 +7,9 @@ use BolRetailerAPI\Exceptions\AuthenticationException;
 
 class ApiTest extends BolTestCase
 {
+    /**
+     * @var Api
+     */
     private $api;
 
     protected function setUp() : void
@@ -107,5 +110,11 @@ class ApiTest extends BolTestCase
     {
         $model = $this->api->updateTransport('358612589', 'TNT', '3SAOLD1234567');
         $this->assertEquals($model->status, "PENDING");
+    }
+
+    public function testGetReductions()
+    {
+        $model = $this->api->getReductions();
+        $this->assertEquals($model[0]->costReduction, 1.45);
     }
 }

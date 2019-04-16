@@ -25,7 +25,7 @@ abstract class BaseModel
      * 
      * @param object $deserialized Deserialized json
      */
-    static private function createObject(object $deserialized) : object
+    static private function createObject($deserialized) : object
     {
         $ref = new \ReflectionClass(static::class);
         $instance = $ref->newInstanceWithoutConstructor();

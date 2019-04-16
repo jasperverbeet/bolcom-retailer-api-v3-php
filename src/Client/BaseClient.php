@@ -24,7 +24,7 @@ class BaseClient
    /**
     * Returns an array with default headers
     */
-   private function getDefaultHeaders() : array
+   private function getDefaultHeaders(): array
    {
       return array(
          'Accept' => 'application/vnd.retailer.v3+json',
@@ -42,8 +42,8 @@ class BaseClient
       return $this->client->request('GET', $url, [
          'query' => $query,
          'headers' => array_merge(
+            $this->getDefaultHeaders(),
             $headers,
-            $this->getDefaultHeaders()
          ),
       ]);
    }
@@ -59,8 +59,8 @@ class BaseClient
       return $this->client->request('POST', $url, [
          'body' => json_encode($parameters),
          'headers' => array_merge(
-            $headers,
             $this->getDefaultHeaders(),
+            $headers,
          ),
       ]);
    }
@@ -71,14 +71,14 @@ class BaseClient
     * @param array $parameters Optional body parameters
     * @param array $headers Optional headers
     */
-    public function put(string $url, array $parameters = array(), array $headers = array()): Response
-    {
-       return $this->client->request('PUT', $url, [
-          'body' => json_encode($parameters),
-          'headers' => array_merge(
-             $headers,
-             $this->getDefaultHeaders(),
-          ),
-       ]);
-    }
+   public function put(string $url, array $parameters = array(), array $headers = array()): Response
+   {
+      return $this->client->request('PUT', $url, [
+         'body' => json_encode($parameters),
+         'headers' => array_merge(
+            $headers,
+            $this->getDefaultHeaders(),
+         ),
+      ]);
+   }
 }

@@ -18,6 +18,11 @@ class ReductionModel extends BaseModel
     public $endDate;
 
     /**
+     * @var string
+     */
+    public $ean;
+
+    /**
      * @var float
      */
     public $maximumPrice;
@@ -34,8 +39,10 @@ class ReductionModel extends BaseModel
     {
         $this->assertType($this->startDate, 'string');
         $this->assertType($this->endDate, 'string');
-        $this->assertType($this->maximumPrice, 'double');
-        $this->assertType($this->costReduction, 'double');
+        
+        // When parsing a csv we don't know whether these are doubles or ints
+        // $this->assertType($this->maximumPrice, 'double');
+        // $this->assertType($this->costReduction, 'double');
 
         $this->startDate = Carbon::parse($this->startDate);
         $this->endDate = Carbon::parse($this->endDate);

@@ -100,7 +100,6 @@ class AuthenticatedClient extends BaseClient
         if ($this->isAuthenticated()) $this->authenticate();
 
         $parameters = array_filter($parameters);
-        $headers = array_filter($headers);
 
         // Add authorization header
         $headers['Authorization'] = "{$this->token_type} {$this->access_token}";
@@ -113,14 +112,20 @@ class AuthenticatedClient extends BaseClient
                 return $this->post(
                     $this->api_base . $endpoint,
                     $parameters,
-                    array_merge($headers, array('Content-Type' => 'application/vnd.retailer.v3+json'))
+                    array_merge(
+                        array('Content-Type' => 'application/vnd.retailer.v3+json'),
+                        $headers
+                    )
                 );
                 break;
             case 'PUT':
                 return $this->put(
                     $this->api_base . $endpoint,
                     $parameters,
-                    array_merge($headers, array('Content-Type' => 'application/vnd.retailer.v3+json'))
+                    array_merge(
+                        array('Content-Type' => 'application/vnd.retailer.v3+json'),
+                        $headers
+                    ),
                 );
                 break;
             default:

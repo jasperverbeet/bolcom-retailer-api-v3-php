@@ -76,18 +76,25 @@ $client->getAllReturns("FBR");
 $client->updateTransport("358612589", "TNT", "3SAOLD1234567");
 ```
 
+### Reductions
+[https://api.bol.com/retailer/public/demo/reductions.html](https://api.bol.com/retailer/public/demo/reductions.html)
+```php
+// Get all reductions for the current user
+$client->getReductions();
+```
+
 ## TODO
 
 - ~Commission~
 - ~Returns~
 - ~Inventory~
 - ~Transports~
+- ~Reductions~
 - Inbounds
 - Invoices
 - Offers
 - Orders
 - Process status
-- Reductions
 - Shipments
 - Shipping labels
 
