@@ -23,6 +23,7 @@ $client->demoMode();
 ## Methods
 
 ### Comissions
+[https://api.bol.com/retailer/public/demo/commission.html](https://api.bol.com/retailer/public/demo/commission.html)
 ```php
 // Get commision data for a single EAN
 $client->getCommission("8712626055143", 30.00, "NEW")
@@ -43,12 +44,14 @@ $client->getCommissions(array(
 ```
 
 ### Inventory
+[https://api.bol.com/retailer/public/demo/inventory.html](https://api.bol.com/retailer/public/demo/inventory.html)
 ```php
 // Get inventory for current user
 $client->getInventory();
 ```
 
 ### Returns
+[https://api.bol.com/retailer/public/demo/returns.html](https://api.bol.com/retailer/public/demo/returns.html)
 ```php
 // Update a specific return status
 $client->updateReturnStatus("86123452", "RETURN_RECEIVED", 3);
