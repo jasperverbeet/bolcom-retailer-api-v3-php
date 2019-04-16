@@ -120,8 +120,8 @@ class ReturnModel extends BaseModel
         $this->assertType($this->ean, 'string');
         $this->assertType($this->quantity, 'integer');
         $this->assertType($this->registrationDateTime, 'string');
-        $this->assertType($this->returnReason, 'string');
-        $this->assertType($this->returnReasonComments, 'string');
+        // $this->assertType($this->returnReason, 'string');
+        // $this->assertType($this->returnReasonComments, 'string');
         $this->assertType($this->handled, 'boolean');
 
         if (!is_null($this->customerDetails))

@@ -136,6 +136,8 @@ class Api
         ));
 
         $deserialized = Serializer::deserialize((string)$resp->getBody());
+
+        if (!property_exists($deserialized, 'returns')) return array();
         return ReturnModel::manyFromResponse($deserialized->returns);
     }
 
